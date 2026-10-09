@@ -1,0 +1,22 @@
+from fastapi import FastAPI
+
+from app.database import Base, engine
+from app import models
+from app.routers import auth, tasks
+
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(
+    title="Task Manager API",
+    description="Task management API with JWT authentication",
+    version="1.0.0",
+)
+
+app.include_router(auth.router)
+app.include_router(tasks.router)
+
+
+@app.get("/", tags=["Health"])
+def home():
+    return {"message": "Task Manager API is running"}
